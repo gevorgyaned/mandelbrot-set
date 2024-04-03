@@ -74,6 +74,9 @@ int main(int argc, char *argv[])
                             ITERATIONS += 10;
                             printf("%d\n", ITERATIONS);
                             break;
+                        case SDLK_BACKSPACE:
+                            scale /= 1.02f;
+                            break;
                     }
                 break;
             }
