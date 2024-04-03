@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 
                     float_mask = _mm256_cmp_pd(mod2, four, _CMP_LT_OQ);
                     mask = _mm256_cmpgt_epi64(itr, n);
-                    mask = _mm256_and_si256(mask, float_mask);
+                    mask = _mm256_and_si256(mask, _mm256_castpd_si256(float_mask));
                     n = _mm256_add_epi64(n, _mm256_and_si256(mask, one));
                 }  
 
@@ -129,9 +129,9 @@ int main(int argc, char *argv[])
                 }      
             }
         }
+
         clock_t end = clock();
         printf("time passed - %lf\n", ((double)(end - start)) / CLOCKS_PER_SEC);
-
 
         SDL_RenderPresent(render);
     }
