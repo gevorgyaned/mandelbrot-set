@@ -10,6 +10,9 @@
 #include <math.h>
 #include <pthread.h>
 
+#define CHANGE_SPEED 100
+#define ZOOM_SPEED 10
+
 SDL_Window *main_window;
 SDL_Renderer *render;
 
@@ -20,13 +23,10 @@ SDL_Color get_color(long iteration) {
     return (SDL_Color){0, 0, 0};
 }
 
-float scale = 1.0f;
 
 int main(int argc, char *argv[]) 
 {
-    int centerY = (IM_END - IM_BEG);
-    int centerX = (REAL_END - REAL_BEG);
-
+    FILE *file = fopen("log.txt", "w+");
     SDL_Event event;
 
     SDL_Init(SDL_INIT_VIDEO);
@@ -41,6 +41,8 @@ int main(int argc, char *argv[])
     double zoomX, zoomY;
     
     for (;;) {
+        double scaleX = (REAL_END - REAL_BEG) / (WINDOW_WIDTH);
+        double scaleY = (IM_END - IM_BEG) / (WINDOW_HEIGHT);
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
                 case SDL_QUIT:  
@@ -48,34 +50,33 @@ int main(int argc, char *argv[])
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
                         case SDLK_UP:
-                            IM_END -= (0.1 / scale);
-                            IM_BEG -= (0.1 / scale);
+                            IM_END -= (0.1 * scaleY * CHANGE_SPEED);
+                            IM_BEG -= (0.1 * scaleY * CHANGE_SPEED);
                             break;
                         case SDLK_DOWN:
-                            IM_END += (0.1 / scale);
-                            IM_BEG += (0.1 / scale);
+                            IM_END += (0.1 * scaleY * CHANGE_SPEED);
+                            IM_BEG += (0.1 * scaleY * CHANGE_SPEED);
                             break;
                         case SDLK_LEFT:
-                            REAL_BEG -= (0.1 / scale);
-                            REAL_END -= (0.1 / scale);
+                            REAL_BEG -= (0.1 * scaleX * CHANGE_SPEED);
+                            REAL_END -= (0.1 * scaleX * CHANGE_SPEED);
                             break;
                         case SDLK_RIGHT:
-                            REAL_END += (0.1 / scale);
-                            REAL_BEG += (0.1 / scale);
+                            REAL_END += (0.1 * scaleX * CHANGE_SPEED);
+                            REAL_BEG += (0.1 * scaleX * CHANGE_SPEED);
                             break;
                         case SDLK_RETURN:
-                            scale *= 1.02f;
-                            REAL_END /= scale;
-                            IM_END /= scale;
-                            IM_BEG /= scale;
-                            REAL_BEG /= scale;
+                            scaleX /= 1.02;
+                            scaleY /= 1.02;
+                            REAL_END -= scaleX * ZOOM_SPEED;
+                            IM_END -= scaleY * ZOOM_SPEED;
+                            IM_BEG += scaleY * ZOOM_SPEED;
+                            REAL_BEG += scaleX * ZOOM_SPEED;
+                            fprintf(file, "REAL_END - %lf, REAL_BEG - %lf, IM_END - %lf, IM_BEG - %lf\n", REAL_END, REAL_BEG, IM_END, IM_BEG);
                             break;
                         case SDLK_SPACE:
-                            ITERATIONS += 10;
+                            ITERATIONS += 10; 
                             printf("%d\n", ITERATIONS);
-                            break;
-                        case SDLK_BACKSPACE:
-                            scale /= 1.02f;
                             break;
                     }
                 break;
@@ -127,9 +128,9 @@ int main(int argc, char *argv[])
                     SDL_RenderDrawPoint(render, i, j - k + 3);
                 }      
             }
+        }
         clock_t end = clock();
         printf("time passed - %lf\n", ((double)(end - start)) / CLOCKS_PER_SEC);
-        }
 
 
         SDL_RenderPresent(render);
