@@ -26,11 +26,11 @@ SDL_Color palette[] = {
 
 #define ARR_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
-static double REAL_BEG   =   -2;
+static double REAL_BEG   =   -1;
 static double REAL_END   =    1;
 static double IM_BEG     =   -1;
 static double IM_END     =    1;
-static int WINDOW_WIDTH  =  600;
+static int WINDOW_WIDTH  =  400;
 static int WINDOW_HEIGHT =  400;
 static int THREADS_COUNT =    4;
 static int ITERATIONS    =  100;
