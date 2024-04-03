@@ -26,9 +26,7 @@ SDL_Color get_color(long iteration) {
 
 int main(int argc, char *argv[]) 
 {
-    FILE *file = fopen("log.txt", "w+");
     SDL_Event event;
-
     SDL_Init(SDL_INIT_VIDEO);
     SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, 0, &main_window, &render);
     SDL_SetRenderDrawColor(render, 0, 0, 0, 0);
@@ -72,7 +70,6 @@ int main(int argc, char *argv[])
                             IM_END -= scaleY * ZOOM_SPEED;
                             IM_BEG += scaleY * ZOOM_SPEED;
                             REAL_BEG += scaleX * ZOOM_SPEED;
-                            fprintf(file, "REAL_END - %lf, REAL_BEG - %lf, IM_END - %lf, IM_BEG - %lf\n", REAL_END, REAL_BEG, IM_END, IM_BEG);
                             break;
                         case SDLK_SPACE:
                             ITERATIONS += 10; 
